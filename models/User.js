@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const accountTierEnum = require('../enums/accountTiers');
+const accountTiers = require('../enums/accountTiers');
 
 
 const UserSchema = new mongoose.Schema({
@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
     accountTier:{
         type: Number,
         required: true,
-        enum:[accountTierEnum],
+        enum:[accountTiers],
     },
     accounts:{
         type: [String],
