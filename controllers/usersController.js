@@ -65,13 +65,19 @@ exports.createUser = async (req,res, next) => {
 // @access Private
 exports.updateUser = async (req,res, next) => {
     try{
+        let requestbody = req.body;
+        requestbody['updatedAt'] = Date.now();
+
+        console.log(requestbody);
+
         const user = await User.findByIdAndUpdate(
             req.params.id, // find by Id
-            req.body, // and update to, TODO: find a way to update the updatedAt
+            requestbody, // and update to
             {
                 new: true,
                 runValidators: true
-            });
+            }
+        );
 
         if (!user){
             res.status(400).json({ 
