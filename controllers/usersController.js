@@ -68,8 +68,6 @@ exports.updateUser = async (req,res, next) => {
         let requestbody = req.body;
         requestbody['updatedAt'] = Date.now();
 
-        console.log(requestbody);
-
         const user = await User.findByIdAndUpdate(
             req.params.id, // find by Id
             requestbody, // and update to
