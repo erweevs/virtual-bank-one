@@ -25,7 +25,7 @@ if(process.env.NODE_ENV === 'development'){
 // mount the Users route
 app.use('/api/v1/users', users);
 
-// add the custom error handler middleware
+// add the custom error handler middleware (has to be after the controller mounting)
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
