@@ -4,6 +4,7 @@ const morgan = require('morgan');
 
 const users = require('./routes/users');
 const connectToDb = require('./config/db');
+const errorHandler = require('./middleware/error');
 
 // load the env variables
 dotenv.config({path: './config/config.env'});
@@ -23,6 +24,9 @@ if(process.env.NODE_ENV === 'development'){
 
 // mount the Users route
 app.use('/api/v1/users', users);
+
+// add the custom error handler middleware
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const ErrorResponse = require('../utils/errorResponse');
 
 // @desc Get all Users
 // @route GET /api/v1/users
@@ -12,9 +13,7 @@ exports.getUsers = async (req,res, next) => {
             data: users
         });
     } catch(err){
-        res.status(400).json({ 
-            success: false
-        });
+        next(err);
     }    
 }
 
@@ -26,9 +25,7 @@ exports.getUser = async (req,res, next) => {
         const user = await User.findById(req.params.id);
 
         if(!user){
-            return res.status(400).json({ 
-                success: false
-            });
+            return next(new ErrorResponse(`User with Id ${req.params.id} does not exist`, 404));
         }
 
         res.status(200).json({
@@ -36,9 +33,7 @@ exports.getUser = async (req,res, next) => {
             data: user
         });
     } catch(err){
-        res.status(400).json({ 
-            success: false
-        });
+        next(err);
     }    
 }
 
@@ -54,9 +49,7 @@ exports.createUser = async (req,res, next) => {
             data: user
         });
     } catch(err){
-        res.status(400).json({ 
-            success: false
-        });
+        next(err);
     }
 }
 
@@ -78,18 +71,14 @@ exports.updateUser = async (req,res, next) => {
         );
 
         if (!user){
-            res.status(400).json({ 
-                success: false
-            });
+            return next(new ErrorResponse(`User with Id ${req.params.id} does not exist`, 404));
         }
 
         res.status(200).json({
             success: true, 
             data: user});
     }catch(err){
-        res.status(400).json({ 
-            success: false
-        });
+        next(err);
     }    
 }
 
@@ -101,9 +90,7 @@ exports.deleteUser = async (req,res, next) => {
         const user = await User.findByIdAndDelete(req.params.id);
 
         if (!user){
-            res.status(400).json({ 
-                success: false
-            });
+            return next(new ErrorResponse(`User with Id ${req.params.id} does not exist`, 404));
         }
 
         res.status(200).json({
@@ -111,8 +98,6 @@ exports.deleteUser = async (req,res, next) => {
             data: {}
         });
     }catch(err){
-        res.status(400).json({ 
-            success: false
-        });
+        next(err);
     }    
 }
