@@ -6,7 +6,38 @@ const asyncHandler = require('../middleware/async');
 // @route GET /api/v1/users
 // @access Public
 exports.getUsers = asyncHandler(async (req,res, next) => {
-    const users = await User.find();
+    // copy the request query
+    const requestQuery = {...req.query};
+
+    // array of fields to exclude from filtering
+    const removeFields = ['select', 'sort'];
+
+    // remove the nessecary fields so that we dont send it to MongoDB
+    removeFields.forEach(param => delete requestQuery[param]);
+
+    let query = User.find(requestQuery);
+
+    // filter the returned data if there is a select query present
+    if(req.query.select){
+        // format the select parameters to fit the format Mongo requires
+        const selectFields = req.query.select.split(',').join(' ');
+
+        // mount the select paramters to the query
+        query = query.select(selectFields);
+    }
+
+    // sort the data id the sort parameter is present
+    if(req.query.sort){
+        const sortBy = req.query.sort.split(',').join(' ');
+
+        query = query.sort(sortBy);
+    }else{
+        // default sort by updatedAt
+        query = query.sort('-updatedAt');
+    }
+
+    // execut the query
+    const users = await query;
 
     res.status(200).json({
         success: true, 
