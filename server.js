@@ -2,7 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 
-const users = require('./routes/users');
+const usersRoute = require('./routes/users');
+const accountsRoute = require('./routes/accounts');
 const connectToDb = require('./config/db');
 const errorHandler = require('./middleware/error');
 
@@ -23,7 +24,8 @@ if(process.env.NODE_ENV === 'development'){
 }
 
 // mount the Users route
-app.use('/api/v1/users', users);
+app.use('/api/v1/users', usersRoute);
+app.use('/api/v1/accounts', accountsRoute);
 
 // add the custom error handler middleware (has to be after the controller mounting)
 app.use(errorHandler);

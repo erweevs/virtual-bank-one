@@ -9,6 +9,12 @@ const {
     deleteUser
 } = require('../controllers/usersController');
 
+// include other area router
+const accountRouter = require('./accounts');
+
+// re-route into other area routers
+router.use('/:userId/accounts', accountRouter);
+
 // mount the controller methods
 router.route('/')
     .get(getUsers) // mount the GET call to the route /
