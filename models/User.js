@@ -39,10 +39,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         enum:[accountTiers],
     },
-    accounts:{
-        type: [String],
-        required: true
-    },
+
     accountVerified:{
         type: Boolean,
         default: false
@@ -55,6 +52,23 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+},{
+    toJSON: { virtuals: true},
+    toObject: { virtuals: true}
+});
+
+// cascade delete Accounts when a User is deleted
+UserSchema.pre('remove', async function (next){
+    await this.model('Account').deleteMany({user: this._id});
+    next();
+});
+
+// reverse populate with virtuals
+UserSchema.virtual('accounts', {
+    ref: 'Account', // model to include
+    localField: '_id',
+    foreignField: 'user', // the field in the 'Account' model we want to partain to
+    justOne: false // indicates that it will return an array
 });
 
 module.exports = mongoose.model('User', UserSchema);

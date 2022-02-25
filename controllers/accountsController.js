@@ -16,7 +16,7 @@ exports.getAccounts = asyncHandler(async (req, res, next) => {
         });
     } else{
         // else get all the accounts
-        query = Account.find();
+        query = Account.find().populate('user');
     }
 
     const accounts = await query;

@@ -15,7 +15,7 @@ exports.getUsers = asyncHandler(async (req,res, next) => {
     // remove the nessecary fields so that we dont send it to MongoDB
     removeFields.forEach(param => delete requestQuery[param]);
 
-    let query = User.find(requestQuery);
+    let query = User.find(requestQuery).populate('accounts');
 
     // filter the returned data if there is a select query present
     if(req.query.select){
@@ -132,11 +132,14 @@ exports.updateUser = asyncHandler(async (req,res, next) => {
 // @route DELETE /api/v1/users
 // @access Private
 exports.deleteUser = asyncHandler(async (req,res, next) => {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
 
     if (!user){
         return next(new ErrorResponse(`User with Id ${req.params.id} does not exist`, 404));
     }
+
+    // use this as is to trigger cascading deletion middleware
+    user.remove();
 
     res.status(200).json({
         success: true, 
