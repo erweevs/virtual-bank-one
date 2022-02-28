@@ -39,3 +39,10 @@ exports.createAccount = asyncHandler(async (req, res, next) => {
         data: account
     });
 });
+
+// @desc Get all Accounts
+// @route GET /api/v1/accounts
+// @access Private
+exports.deleteAccount = asyncHandler(async (req, res, next) => {
+    // TODO: add deletion
+});
