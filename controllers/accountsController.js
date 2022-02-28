@@ -44,5 +44,18 @@ exports.createAccount = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/accounts
 // @access Private
 exports.deleteAccount = asyncHandler(async (req, res, next) => {
-    // TODO: add deletion
+    const account = await Account.findById(req.params.id);
+
+    if (!account){
+        return next(new ErrorResponse(`Account with Id ${req.params.id} does not exist`, 404));
+    }
+
+    // use this as is to trigger cascading deletion middleware
+    // TODO: add cascading middleware if need be
+    account.remove();
+
+    res.status(200).json({
+        success: true, 
+        data: {}
+    });
 });
