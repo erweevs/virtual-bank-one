@@ -6,6 +6,7 @@ const path = require('path');
 
 const usersRoute = require('./routes/users');
 const accountsRoute = require('./routes/accounts');
+const authRoute = require('./routes/auth');
 const connectToDb = require('./config/db');
 const errorHandler = require('./middleware/error');
 
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // mount the Users route
 app.use('/api/v1/users', usersRoute);
 app.use('/api/v1/accounts', accountsRoute);
+app.use('/api/v1/auth', authRoute);
 
 // add the custom error handler middleware (has to be after the controller mounting)
 app.use(errorHandler);
