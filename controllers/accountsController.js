@@ -1,6 +1,7 @@
 const Account = require('../models/Account');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const accountTypes = require('../enums/accountTypes');
 
 // @desc Get all Accounts
 // @route GET /api/v1/accounts
@@ -53,5 +54,17 @@ exports.deleteAccount = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true, 
         data: {}
+    });
+});
+
+// @desc Get all Account Types
+// @route GET /api/v1/accounts/types
+// @access Public
+exports.getAccountTypes = asyncHandler(async (req, res, next) => {
+    const types = Object.keys(accountTypes);
+
+    res.status(200).json({
+        success: true, 
+        data: types
     });
 });

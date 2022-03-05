@@ -7,7 +7,8 @@ const advancedResults = require('../middleware/advanceResults');
 const {
     createAccount,
     getAccounts,
-    deleteAccount
+    deleteAccount,
+    getAccountTypes
 } = require('../controllers/accountsController');
 
 // mount the controller methods
@@ -17,5 +18,8 @@ router.route('/')
 
 router.route('/:id')
     .delete(deleteAccount);
+
+router.route('/types')
+    .get(getAccountTypes);
 
 module.exports = router;

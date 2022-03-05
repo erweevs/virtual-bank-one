@@ -5,7 +5,7 @@ const asyncHandler = require('../middleware/async');
 
 // @desc Get all Users
 // @route GET /api/v1/users
-// @access Public
+// @access Private
 exports.getUsers = asyncHandler(async (req,res, next) => {
     // use the advancedResults middleware to get the data
     res.status(200).json(res.advancedResults);    
@@ -13,7 +13,7 @@ exports.getUsers = asyncHandler(async (req,res, next) => {
 
 // @desc Get single Users
 // @route GET /api/v1/users/:id
-// @access Public
+// @access Private
 exports.getUser = asyncHandler(async (req,res, next) => {
     const user = await User.findById(req.params.id);
 
