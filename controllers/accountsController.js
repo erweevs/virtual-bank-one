@@ -7,25 +7,21 @@ const asyncHandler = require('../middleware/async');
 // @route GET /api/v1/users/:userId/accounts
 // @access Private
 exports.getAccounts = asyncHandler(async (req, res, next) => {
-    let query = {};
-
     // first see if we should fetch accouts for a specific user
     if(req.params.userId){
-        query = Account.find({
+        const accounts = await Account.find({
             user: req.params.userId
         });
+
+        return res.status(200).json({
+            success: true,
+            count: accounts.length,
+            data: accounts
+        });
     } else{
-        // else get all the accounts
-        query = Account.find().populate('user');
+        // else get all the accounts using the advancedResults middleware
+        res.status(200).json(res.advancedResults);
     }
-
-    const accounts = await query;
-
-    res.status(200).json({
-        success: true,
-        count: accounts.length,
-        data: accounts
-    });
 });
 
 // @desc Get all Accounts

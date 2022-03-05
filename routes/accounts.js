@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
 
+const Account = require('../models/Account');
+const advancedResults = require('../middleware/advanceResults');
+
 const {
     createAccount,
     getAccounts,
@@ -9,7 +12,7 @@ const {
 
 // mount the controller methods
 router.route('/')
-    .get(getAccounts)
+    .get(advancedResults(Account, 'user'), getAccounts)
     .post(createAccount);
 
 router.route('/:id')

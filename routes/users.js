@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+const advancedResults = require('../middleware/advanceResults');
+const User = require('../models/User');
+
 const { 
     getUsers, 
     getUser, 
@@ -20,7 +23,7 @@ router.route('/:id/photo').put(userPhotoupload);
 
 // mount the controller methods
 router.route('/')
-    .get(getUsers) // mount the GET call to the route /
+    .get(advancedResults(User, 'accounts'), getUsers) // mount the GET call to the route /, and add the custom middleware
     .post(createUser); // mount the POST call to the route /
 
 router.route('/:id')
