@@ -39,7 +39,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         enum:[accountTiers],
     },
-
+    photo:{
+        type: String,
+        default: 'user-photo.img'
+    },
     accountVerified:{
         type: Boolean,
         default: false

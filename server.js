@@ -1,6 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const usersRoute = require('./routes/users');
 const accountsRoute = require('./routes/accounts');
@@ -22,6 +24,12 @@ app.use(express.json());
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
+
+// file upload middleware
+app.use(fileUpload());
+
+// set static folder for the photos
+app.use(express.static(path.join(__dirname, 'public')));
 
 // mount the Users route
 app.use('/api/v1/users', usersRoute);
