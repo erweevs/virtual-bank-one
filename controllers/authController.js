@@ -15,13 +15,8 @@ exports.register = asyncHandler(async (req,res, next) => {
         password
     });
 
-    // generate the token
-    const token = identity.getSignedJwtToken();
-
-    res.status(200).json({
-        success: true,
-        token: token
-    });    
+    // use helper method to send the response
+    sendTokenResponse(identity, 200, res);    
 });
 
 // @desc Login User
@@ -49,11 +44,47 @@ exports.login = asyncHandler(async (req,res, next) => {
         return next(new ErrorResponse('Invalid login credentials', 401));
     }
 
-    // generate the token
-    const token = identity.getSignedJwtToken();
+    // use helper method to send the response
+    sendTokenResponse(identity, 200, res);   
+});
+
+// @desc get current logged in User
+// @route GET /api/v1/auth/me
+// @access Private
+exports.getMe = asyncHandler(async (req,res, next) => {
+    const loggedInUser = await UserIdentity.findById(req.identity.id);
 
     res.status(200).json({
         success: true,
-        token: token
-    });    
+        data: loggedInUser
+    });
 });
+
+// helper method to get the token from the model, create the cookie, and send the response
+const sendTokenResponse = (identity, statusCode, res) => {
+    // generate the token
+    const token = identity.getSignedJwtToken();
+
+    // this is just to make the calculation below more readable
+    const dailyHours = 24;
+    const minutesPerHour = 60;
+    const secondsPerMinute = 60;
+    const milliSecondsPerSecond = 1000;
+
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE_DAYS * dailyHours * minutesPerHour * secondsPerMinute * milliSecondsPerSecond),
+        httpOnly: true
+    };
+
+    // set the 'secure' property to true for the production version
+    if(process.env.NODE_ENV === 'production'){
+        cookieOptions.secure = true
+    }
+
+    res.status(statusCode)
+    .cookie('token', token, cookieOptions)
+    .json({
+        success: true,
+        token: token
+    }); 
+}
