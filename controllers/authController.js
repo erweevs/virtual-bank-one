@@ -23,3 +23,37 @@ exports.register = asyncHandler(async (req,res, next) => {
         token: token
     });    
 });
+
+// @desc Login User
+// @route POST /api/v1/auth/login
+// @access Public
+exports.login = asyncHandler(async (req,res, next) => {
+    const {userName, password} = req.body;
+
+    // validate the userName and password
+    if(!userName || !password){
+        return next(new ErrorResponse('Please provide a user name and password', 400));
+    }
+
+    // check that the user's identity exists
+    const identity = await UserIdentity.findOne({userName: userName}).select('+password');
+
+    if(!identity){
+        return next(new ErrorResponse('Invalid login credentials', 401));
+    }
+
+    // check the password
+    const validPassword = await identity.validatePassword(password);
+
+    if(!validPassword){
+        return next(new ErrorResponse('Invalid login credentials', 401));
+    }
+
+    // generate the token
+    const token = identity.getSignedJwtToken();
+
+    res.status(200).json({
+        success: true,
+        token: token
+    });    
+});

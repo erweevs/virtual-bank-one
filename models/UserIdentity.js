@@ -45,4 +45,9 @@ UserIdentitySchema.methods.getSignedJwtToken = function(){
         {expiresIn: process.env.JWT_EXPIRE});
 }
 
+// match the Users's password to hashed passwordin the DB
+UserIdentitySchema.methods.validatePassword = async function(plainTextPassword){
+    return await bcrypt.compare(plainTextPassword, this.password);
+}
+
 module.exports = mongoose.model('UserIdentity', UserIdentitySchema);
