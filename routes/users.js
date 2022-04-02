@@ -3,7 +3,7 @@ const router = express.Router();
 
 const advancedResults = require('../middleware/advanceResults');
 const User = require('../models/User');
-const {protect} = require('../middleware/auth');
+const {protect, authorize} = require('../middleware/auth');
 
 const { 
     getUsers, 
@@ -25,7 +25,7 @@ router.route('/:id/photo').put(userPhotoupload);
 // mount the controller methods
 router.route('/')
     .get(advancedResults(User, 'accounts'), getUsers) // mount the GET call to the route /, and add the custom middleware
-    .post(protect, createUser); // mount the POST call to the route /
+    .post(protect, authorize('admin', 'superadmin'), createUser); // mount the POST call to the route /
 
 router.route('/:id')
     .get(getUser) // mount the GET call to the route /:id

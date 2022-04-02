@@ -60,6 +60,27 @@ exports.getMe = asyncHandler(async (req,res, next) => {
     });
 });
 
+// @desc Forgot password
+// @route POST /api/v1/auth/forgotpassword
+// @access Public
+exports.forgotPassword = asyncHandler(async (req,res, next) => {
+    const user = await UserIdentity.findOne({userName: req.body.userName});
+
+    if(!user){
+        return next(new ErrorResponse(`UserName: ${req.body.userName} doesn't exist.`, 404));
+    }
+
+    // get reset token
+    const resetToken = user.getResetTokenPasswordToken();
+
+    await user.save({validateBeforeSave: false});
+
+    res.status(200).json({
+        success: true,
+        data: user
+    });
+});
+
 // helper method to get the token from the model, create the cookie, and send the response
 const sendTokenResponse = (identity, statusCode, res) => {
     // generate the token

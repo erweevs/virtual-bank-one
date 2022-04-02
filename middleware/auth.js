@@ -30,3 +30,15 @@ exports.protect = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Not authorized to access this route', 401));
     }
 });
+
+// grant access to specific roles
+// use spread operator (...) to decouple a comma seprated list of roles
+exports.authorize = (...roles) => {
+    return (req, res, next) => {
+        if(!roles.includes(req.identity.role)){
+            return next(new ErrorResponse(`Identity role '${req.identity.role}' is not authorized to access this route`, 403));
+        }
+
+        next();
+    }
+}
