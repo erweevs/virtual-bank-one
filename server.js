@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const usersRoute = require('./routes/users');
 const accountsRoute = require('./routes/accounts');
@@ -32,6 +33,9 @@ if(process.env.NODE_ENV === 'development'){
 
 // file upload middleware
 app.use(fileUpload());
+
+// sanitize data
+app.use(mongoSanitize());
 
 // set static folder for the photos
 app.use(express.static(path.join(__dirname, 'public')));
