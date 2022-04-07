@@ -5,6 +5,11 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xxs = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
 
 const usersRoute = require('./routes/users');
 const accountsRoute = require('./routes/accounts');
@@ -37,10 +42,31 @@ app.use(fileUpload());
 // sanitize data
 app.use(mongoSanitize());
 
+// set security headers
+app.use(helmet());
+
+// prevent xss attacks
+app.use(xxs());
+
+// rate limiting
+const limiter = rateLimit({
+    // set the rate to only allow 100 requests per 10 minutes
+    windowMs: 10 * 60 * 1000, // 10minutes
+    max: 100
+});
+
+app.use(limiter);
+
+// prevent http param pollution
+app.use(hpp());
+
+// enable CORS
+app.use(cors());
+
 // set static folder for the photos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// mount the Users route
+// mount the routes
 app.use('/api/v1/users', usersRoute);
 app.use('/api/v1/accounts', accountsRoute);
 app.use('/api/v1/auth', authRoute);
